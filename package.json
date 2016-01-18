@@ -1,0 +1,16 @@
+{
+  "name": "todo-express-api",
+  "version": "v0.0.1",
+  "description": "api for my todo list based on express",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marlass/todo.git"
+  },
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "mongoose": "^4.3.6"
+  }
+}
