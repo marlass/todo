@@ -23,3 +23,18 @@ Progressive web app. Use modernizr, service worker, push notifications.
 Additions:
 Pomodoro timer.
 
+Technologies i want to learn by doing this project:
+- configure nice gulp file for this apps (SASS etc.)
+- use webpack for client side js
+- babel for ES6
+- create basic yo generator for similar apps
+- swig for templates
+- configure linters for VS Code
+- tests with Tape
+- sails as nice node.js framework for app/ express for api
+- postman for testing API
+- check bower
+
+Other cool tools for another projects:
+- metalsmith as ssg
+- keystoneJS as cms
