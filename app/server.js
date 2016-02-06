@@ -9,23 +9,28 @@ const mongoose   = require('mongoose');
 mongoose.connect(config.database);
 app.set('superSecret', config.secret);
 
-const Task = require('./models/task');
 const User = require('./models/user');
+const Project = require('./models/project');
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 8080;
 
-const router = express.Router();
+const tasksRouter = require('./routers/tasks');
+const projectsRouter = require('./routers/projects');
+const friendsRouter = require('./routers/friends');
+const usersRouter = require('./routers/users');
 
 app.use(morgan('dev'));
 
 app.get('/', function(req, res) {
-    res.send('Hello! The API is at http://localhost:' + port + '/api');
+    res.send('Hello! Welcome in our API');
 });
 
-router.post('/authenticate', function(req, res) {
+app.use('/users', usersRouter);
+
+app.post('/authenticate', function(req, res) {
 
   // find the user
   User.findOne({
@@ -62,7 +67,7 @@ router.post('/authenticate', function(req, res) {
   });
 });
 
-router.use(function(req, res, next) {
+app.use(function(req, res, next) {
 
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -93,88 +98,11 @@ router.use(function(req, res, next) {
   }
 });
 
-router.get('/', function(req, res) {
-  res.json({ message: 'Welcome to the coolest API on earth!' });
-});
 
-// route to return all users (GET http://localhost:8080/api/users)
-router.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-}); 
-
-router.route('/tasks')
-
-    // create a task (accessed at POST http://localhost:8080/api/tasks)
-    .post(function(req, res) {
-        
-        const task = new Task();    // create a new instance of the Task model
-        task.name = req.body.name;  // set the tasks name (comes from the request)
-
-        // save the task and check for errors
-        task.save(function(err) {
-            if (err)
-                res.send(err);
-
-            res.json({ message: 'Task created!' });
-        });
-        
-    })
+app.use('/tasks', tasksRouter);
+app.use('/projects', projectsRouter);
+app.use('/friends', friendsRouter);
     
-    .get(function(req, res) {
-        Task.find(function(err, tasks) {
-            if (err)
-                res.send(err);
-
-            res.json(tasks);
-        });
-    });
-    
-router.route('/tasks/:task_id')
-    // get the task with that id (accessed at GET http://localhost:8080/api/tasks/:task_id)
-    .get(function(req, res) {
-        Task.findById(req.params.task_id, function(err, task) {
-            if (err)
-                res.send(err);
-            res.json(task);
-        });
-    })
-    
-    .put(function(req, res) {
-
-        // use our task model to find the task we want
-        Task.findById(req.params.task_id, function(err, task) {
-
-            if (err)
-                res.send(err);
-
-            task.name = req.body.name;  // update the tasks info
-
-            // save the task
-            task.save(function(err) {
-                if (err)
-                    res.send(err);
-
-                res.json({ message: 'Task updated!' });
-            });
-
-        });
-    })
-    
-    .delete(function(req, res) {
-        Task.remove({
-            _id: req.params.task_id
-        }, function(err, task) {
-            if (err)
-                res.send(err);
-
-            res.json({ message: 'Successfully deleted' });
-        });
-    });
-
-
-app.use('/api', router);
 
 app.listen(port);
 console.log('API works on port ' + port);

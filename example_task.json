@@ -1,0 +1,32 @@
+{
+    "id": 65,
+    "user": {
+        "id": 43,
+        "name": "marlas",
+        "mail": "lasakmarcin90@gmail.com"
+    },
+    "shared": [{
+        "id": 44,
+        "name": "anyone",
+        "mail": "anyone@internet.com",
+        "permission": "read || read && modify || all"
+    }],
+    "name": "Zrobić API",
+    "description": "Zrobić API w Node.js na Express - opis w markdown",
+    "project": {
+        "id": 5,
+        "name": "Nauka js",
+        "company": "T2T",
+        "description": "Projekt nauki javascript - md"
+    },
+    "deadline": "20160204T164546Z",
+    "size": 25,
+    "real_size": 30,
+    "priority": 1,
+    "tags": ["web", "js", "programming"],
+    "requirements": ["computer", "internet"],
+    "status": "done || todo || cancelled",
+    "added": "20160202T164620Z",
+    "done": "",
+    "cancelled": ""
+}
