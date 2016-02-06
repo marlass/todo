@@ -3,6 +3,10 @@ const router = express.Router();
 
 const Task = require('./../models/task');
 
+const isLogged = require('./../middleware/authorization');
+
+router.use(isLogged);
+
 router.route('/')
 
     // create a task (accessed at POST http://localhost:8080/tasks)
