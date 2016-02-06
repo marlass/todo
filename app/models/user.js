@@ -1,9 +1,14 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-// set up a mongoose model and pass it using module.exports
+const validator = require('validator');
+
 module.exports = mongoose.model('User', new Schema({ 
-    name: String, 
-    password: String, 
-    admin: Boolean 
+    name: {type: String, trim: true, unique: true, required: true}, 
+    mail: {type: String,
+           trim: true,
+           unique: true,
+           required: true,
+           validate: [validator.isEmail, 'Please fill a valid email address']},
+    password: {type: String, required: true}
 }));
