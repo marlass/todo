@@ -10,7 +10,6 @@ mongoose.connect(config.database);
 app.set('superSecret', config.secret);
 
 const User = require('./models/user');
-const Project = require('./models/project');
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
