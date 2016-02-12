@@ -16,6 +16,13 @@
     "jsonwebtoken": "^5.5.4",
     "mongoose": "^4.3.6",
     "morgan": "^1.6.1",
-    "validator": "~4.7.1"
+    "validator": "~4.7.1",
+    "helmet": "~1.1.0"
+  },
+  "devDependencies": {
+    "intern": "~3.0.6",
+    "tape": "~4.4.0",
+    "supertest": "~1.2.0",
+    "leaked-handles": "~5.2.0"
   }
 }

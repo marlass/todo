@@ -1,3 +1,6 @@
+const app = require('./../app');
+const jwt = require('jsonwebtoken');
+
 function isLogged(req, res, next) {
 
   // check header or url parameters or post parameters for token
