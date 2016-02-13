@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
-const User = require('./../models/user');
+const user = require('./../models/user');
 
-router.get('/', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-}); 
+router.route('/')
+     .get(function(req, res) {
+        user.getAll(function(err, users) {
+            res.json(users);
+        });
+     })
+     .post(function(req, res) {
+        user.add(req.body, function(err, result) {
+            res.json(result);
+        }) 
+     }); 
 
 module.exports = router;

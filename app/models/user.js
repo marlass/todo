@@ -1,14 +1,26 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const User = require('./db/user');
 
-const validator = require('validator');
-
-module.exports = mongoose.model('User', new Schema({ 
-    name: {type: String, trim: true, unique: true, required: true}, 
-    mail: {type: String,
-           trim: true,
-           unique: true,
-           required: true,
-           validate: [validator.isEmail, 'Please fill a valid email address']},
-    password: {type: String, required: true}
-}));
+module.exports = {
+add: function(user, cb){
+    User.create(user, function(err, user){
+        if (err)
+            cb(err, null);
+        else
+            cb(null, true);
+    })    
+},
+remove: function(user, cb){
+    
+},
+update: function(user, cb){
+    
+},
+getAll: function(cb){
+    User.find({}, function(err, users) {
+        cb(err, users);
+  });
+},
+get: function(user, cb){
+    
+}
+};

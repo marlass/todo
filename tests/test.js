@@ -5,6 +5,9 @@ process.env.NODE_ENV = 'test';
 const test = require('tape');
 const app = require('./../app/app');
 const request = require('supertest');
+const mongoose = require('mongoose');
+const config = require('./../app/config');
+const async = require('async');
 
 
 test('return welcome message', function (t) {
@@ -19,13 +22,47 @@ test('return welcome message', function (t) {
 })
 
 test('get /users', function (t) {
-    request(app)
-    .get('/users')
-    .expect(200)
-    .end(function(err, result){
-        t.error(err, 'No errors');
-        t.equal(result.text, '[]', 'Empty user list');
-        t.end();
-        process.exit(0);
-    });
+    async.series([
+        function(callback){
+            mongoose.connect(config.database, function(){
+                mongoose.connection.db.dropDatabase();                
+                callback(null, 'done');
+            });
+        },
+        function(callback){
+            request(app)
+            .get('/users')
+            .expect(200)            
+            .expect('Content-Type', 'application\/json; charset=utf-8')
+            .end(function(err, result){
+                t.error(err, 'No errors');
+                t.equal(result.text, '[]', 'Empty user list');
+                callback(null, 'done');
+            });            
+        },
+        function(callback){
+            request(app)
+            .post('/users')
+            .send({ name: 'Test', mail: 'test@test.com', password: 'test' })
+            .expect(200)
+            .end(function(err, result){
+                t.error(err, 'No error while adding test user');
+                t.equal(result.body, true, 'Return true');
+                callback(null, 'done');
+            });
+        },
+        function(callback){
+            request(app)
+            .get('/users')
+            .expect(200)            
+            .expect('Content-Type', 'application\/json; charset=utf-8')
+            .end(function(err, result){
+                t.error(err, 'No errors');
+                t.notEqual(result.text, '[]', 'User on list');
+                t.end();
+                callback(null, 'done');
+                process.exit(0);
+            });
+        }
+    ]);    
 })
