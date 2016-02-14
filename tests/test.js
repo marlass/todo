@@ -60,6 +60,18 @@ test('get /users', function (t) {
     ]);    
 })
 
+test('authentication', function(t){
+    request(app)
+    .post('/authenticate')
+    .send({"name": "yolo"})
+    .expect(200)
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        t.equal(result.text, '{\"success\":false,\"message\":\"Authentication failed. User not found.\"}');
+        t.end();
+    });
+})
+
 test.onFinish(function(){    
     mongoose.connect(config.database, function(){
         mongoose.connection.db.dropDatabase();                
