@@ -11,7 +11,10 @@ router.route('/')
      })
      .post(function(req, res) {
         user.add(req.body, function(err, result) {
-            res.json(result);
+            if (err)
+                res.json(err);
+            else
+                res.json(result);
         }) 
      }); 
 

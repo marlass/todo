@@ -24,12 +24,6 @@ test('return welcome message', function (t) {
 test('get /users', function (t) {
     async.series([
         function(callback){
-            mongoose.connect(config.database, function(){
-                mongoose.connection.db.dropDatabase();                
-                callback(null, 'done');
-            });
-        },
-        function(callback){
             request(app)
             .get('/users')
             .expect(200)            
@@ -61,8 +55,14 @@ test('get /users', function (t) {
                 t.notEqual(result.text, '[]', 'User on list');
                 t.end();
                 callback(null, 'done');
-                process.exit(0);
             });
         }
     ]);    
 })
+
+test.onFinish(function(){    
+    mongoose.connect(config.database, function(){
+        mongoose.connection.db.dropDatabase();                
+        process.exit(0);
+    });
+});
