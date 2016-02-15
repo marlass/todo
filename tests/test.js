@@ -38,7 +38,7 @@ test('get /users', function (t) {
             request(app)
             .post('/users')
             .send({ name: 'Test', mail: 'test@test.com', password: 'test' })
-            .expect(200)
+            .expect(201)
             .end(function(err, result){
                 t.error(err, 'No error while adding test user');
                 t.equal(result.body, true, 'Return true');
@@ -68,8 +68,28 @@ test('authentication', function(t){
     .end(function(err, result){
         t.error(err, 'No errors');
         t.equal(result.text, '{\"success\":false,\"message\":\"Authentication failed. User not found.\"}');
+    });
+    request(app)
+    .post('/authenticate')
+    .send({"name": "Test"})
+    .expect(200)
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        t.equal(result.text, '{\"success\":false,\"message\":\"Authentication failed. Wrong password.\"}');
         t.end();
     });
+})
+
+test('addUser', function(t){
+    const user = require('./../app/models/user');
+    user.add({ name: 'Test', mail: 'test@test.com' }, function(err, result){
+        t.equal(err.errors.password.kind, "required", "Password required error");
+        //t.end();
+    })
+    user.add({ name: 'Test', mail: 'test@test', password: 'test' }, function(err, result){
+        t.equal(err.errors.mail.kind, "user defined", "Wrong email");
+        t.end();
+    })
 })
 
 test.onFinish(function(){    
