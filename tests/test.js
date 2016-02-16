@@ -41,7 +41,12 @@ test('get /users', function (t) {
             .expect(201)
             .end(function(err, result){
                 t.error(err, 'No error while adding test user');
-                t.equal(result.body, true, 'Return true');
+                try {
+                    const newUser = JSON.parse(result.text);                        
+                    t.equal(newUser.mail, 'test@test.com', 'Return user');
+                } catch (e){
+                    throw e;
+                }
                 callback(null, 'done');
             });
         },
@@ -84,10 +89,15 @@ test('addUser', function(t){
     const user = require('./../app/models/user');
     user.add({ name: 'Test', mail: 'test@test.com' }, function(err, result){
         t.equal(err.errors.password.kind, "required", "Password required error");
-        //t.end();
     })
     user.add({ name: 'Test', mail: 'test@test', password: 'test' }, function(err, result){
         t.equal(err.errors.mail.kind, "user defined", "Wrong email");
+    })
+    user.add({ name: 'Tests', mail: 'test@test.com', password: 'test' }, function(err, result){
+        t.equal(err.errors.mail.kind, "Duplicate value", "Duplicate email");
+    })
+    user.add({ name: 'Test', mail: 'test@test.pl', password: 'test' }, function(err, result){
+        t.equal(err.errors.name.kind, "Duplicate value", "Duplicate name");
         t.end();
     })
 })

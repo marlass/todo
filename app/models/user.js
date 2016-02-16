@@ -2,11 +2,12 @@ const User = require('./db/user');
 
 module.exports = {
 add: function(user, cb){
-    User.create(user, function(err, user){
+    const newUser = new User(user);
+    newUser.trySave(function(err, user){
         if (err)
-            cb(err, null);
+            cb(err);
         else
-            cb(null, true);
+            cb(null, user);
     })    
 },
 remove: function(user, cb){
