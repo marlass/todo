@@ -38,15 +38,11 @@ test('get /users', function (t) {
             request(app)
             .post('/users')
             .send({ name: 'Test', mail: 'test@test.com', password: 'test' })
-            .expect(201)
+            .expect(200)
             .end(function(err, result){
                 t.error(err, 'No error while adding test user');
-                try {
-                    const newUser = JSON.parse(result.text);                        
-                    t.equal(newUser.mail, 'test@test.com', 'Return user');
-                } catch (e){
-                    throw e;
-                }
+                const newUser = JSON.parse(result.text);                        
+                t.equal(newUser.mail, 'test@test.com', 'Return user');
                 callback(null, 'done');
             });
         },
@@ -100,6 +96,18 @@ test('addUser', function(t){
         t.equal(err.errors.name.kind, "Duplicate value", "Duplicate name");
         t.end();
     })
+})
+
+test('addUser route error printing', function(t){
+    request(app)
+    .post('/users')
+    .send({ name: 'Test', mail: 'test@test.com', password: 'test' })
+    .expect(400)
+    .end(function(err, result){
+        const errors = JSON.parse(result.text);                        
+        t.equal(errors.errors.name.kind, 'Duplicate value', 'Error returned');
+        t.end();
+    });    
 })
 
 test.onFinish(function(){    
