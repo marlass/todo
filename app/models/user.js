@@ -10,18 +10,9 @@ add: function(user, cb){
             cb(null, user);
     })    
 },
-remove: function(user, cb){
-    
-},
-update: function(user, cb){
-    
-},
 getAll: function(cb){
     User.find({}, function(err, users) {
         cb(err, users);
   });
-},
-get: function(user, cb){
-    
 }
 };

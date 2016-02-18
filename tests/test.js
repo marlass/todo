@@ -6,8 +6,31 @@ const test = require('tape');
 const app = require('./../app/app');
 const request = require('supertest');
 const mongoose = require('mongoose');
-const config = require('./../app/config');
+const Config = require('./../app/config');
+let config = new Config();
 const async = require('async');
+
+test('test config', function(t){
+    process.env.NODE_ENV = 'test';
+    config = new Config();
+    t.ok(typeof config.database !== 'undefined', 'Set test db');
+    t.ok(typeof config.secret !== 'undefined', 'Set test secret');
+    process.env.NODE_ENV = 'development';
+    config = new Config();
+    t.ok(typeof config.database !== 'undefined', 'Set development db');
+    t.ok(typeof config.secret !== 'undefined', 'Set development secret');
+    process.env.NODE_ENV = 'production';
+    config = new Config();
+    t.ok(typeof config.database !== 'undefined', 'Set production db');
+    t.ok(typeof config.secret !== 'undefined', 'Set production secret');
+    process.env.NODE_ENV = 'bla';
+    config = new Config();
+    t.ok(typeof config.database !== 'undefined', 'Set db');
+    t.ok(typeof config.secret !== 'undefined', 'Set secret');
+    process.env.NODE_ENV = 'test';
+    config = new Config();
+    t.end();
+})
 
 
 test('return welcome message', function (t) {
@@ -61,7 +84,7 @@ test('get /users', function (t) {
     ]);    
 })
 
-test('authentication', function(t){
+test('authentication - no user', function(t){
     request(app)
     .post('/authenticate')
     .send({"name": "yolo"})
@@ -69,7 +92,22 @@ test('authentication', function(t){
     .end(function(err, result){
         t.error(err, 'No errors');
         t.equal(result.text, '{\"success\":false,\"message\":\"Authentication failed. User not found.\"}');
+        t.end();
     });
+})
+test('authentication - success', function(t){
+    request(app)
+    .post('/authenticate')
+    .send({"name": "Test", "password": "test"})
+    .expect(200)
+    .end(function(err, result){
+        t.error(err, 'No errors');        
+        const res = JSON.parse(result.text);    
+        t.equal(res.success, true, 'Logged - token given');
+        t.end();
+    });
+})
+test('authentication - wrong password', function(t){ 
     request(app)
     .post('/authenticate')
     .send({"name": "Test"})
@@ -109,6 +147,58 @@ test('addUser route error printing', function(t){
         t.end();
     });    
 })
+
+test('checking if authenticated', function(t){
+     request(app)
+    .post('/authenticate')
+    .send({"name": "Test", "password": "test"})
+    .expect(200)
+    .end(function(err, result){       
+        const res = JSON.parse(result.text);  
+        const token = res.token;  
+        request(app)
+        .get('/tasks')
+        .set('x-access-token', token)
+        .expect(200)
+        .end(function(err, result){
+            t.error(err, 'No errors');
+            t.equal(result.text, '[]', 'Empty tasks list');
+            t.end();
+        })
+    });
+})
+
+test('isLogged wrong token', function(t){
+    request(app)
+    .get('/tasks')
+    .set('x-access-token', 'token')
+    .expect(400)
+    .end(function(err, result){
+        const res = JSON.parse(result.text);
+        t.error(err, 'No errors');
+        t.equal(res.message, 'Failed to authenticate token.', 'wrong token');
+        t.end();
+    });
+})
+
+test('isLogged without token', function(t){
+     request(app)
+    .post('/authenticate')
+    .send({"name": "Test", "password": "test"})
+    .expect(200)
+    .end(function(err, result){
+        request(app)
+        .get('/tasks')
+        .expect(400)
+        .end(function(err, result){
+            const res = JSON.parse(result.text);
+            t.error(err, 'No errors');
+            t.equal(res.message, 'No token provided.', 'No token send');
+            t.end();
+        })
+    });
+})
+
 
 test.onFinish(function(){    
     mongoose.connect(config.database, function(){

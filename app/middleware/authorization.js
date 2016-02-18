@@ -1,5 +1,7 @@
 const app = require('./../app');
 const jwt = require('jsonwebtoken');
+const Config = require('./../config');
+const config = new Config();
 
 function isLogged(req, res, next) {
 
@@ -10,8 +12,9 @@ function isLogged(req, res, next) {
   if (token) {
 
     // verifies secret and checks exp
-    jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
+    jwt.verify(token, config.secret, function(err, decoded) {      
       if (err) {
+        res.status(400);
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
       } else {
         // if everything is good, save to request for use in other routes
@@ -24,7 +27,7 @@ function isLogged(req, res, next) {
 
     // if there is no token
     // return an error
-    return res.status(403).send({ 
+    return res.status(400).send({ 
         success: false, 
         message: 'No token provided.' 
     });
