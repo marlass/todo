@@ -7,6 +7,8 @@ const app = require('./../app/app');
 const request = require('supertest');
 const mongoose = require('mongoose');
 const Config = require('./../app/config');
+const user = require('./../app/models/user');
+let token = '';
 let config = new Config();
 const async = require('async');
 
@@ -44,44 +46,12 @@ test('return welcome message', function (t) {
     });
 })
 
-test('get /users', function (t) {
-    async.series([
-        function(callback){
-            request(app)
-            .get('/users')
-            .expect(200)            
-            .expect('Content-Type', 'application\/json; charset=utf-8')
-            .end(function(err, result){
-                t.error(err, 'No errors');
-                t.equal(result.text, '[]', 'Empty user list');
-                callback(null, 'done');
-            });            
-        },
-        function(callback){
-            request(app)
-            .post('/users')
-            .send({ name: 'Test', mail: 'test@test.com', password: 'test' })
-            .expect(200)
-            .end(function(err, result){
-                t.error(err, 'No error while adding test user');
-                const newUser = JSON.parse(result.text);                        
-                t.equal(newUser.mail, 'test@test.com', 'Return user');
-                callback(null, 'done');
-            });
-        },
-        function(callback){
-            request(app)
-            .get('/users')
-            .expect(200)            
-            .expect('Content-Type', 'application\/json; charset=utf-8')
-            .end(function(err, result){
-                t.error(err, 'No errors');
-                t.notEqual(result.text, '[]', 'User on list');
-                t.end();
-                callback(null, 'done');
-            });
-        }
-    ]);    
+test('add user', function(t){
+    user.add({ name: 'Test', mail: 'test@test.com', password: 'test' }, function(err, res){
+        t.error(err, 'No error while adding test user');
+        t.equal(res.mail, 'test@test.com', 'Return user');
+        t.end();
+    })    
 })
 
 test('authentication - no user', function(t){
@@ -102,7 +72,8 @@ test('authentication - success', function(t){
     .expect(200)
     .end(function(err, result){
         t.error(err, 'No errors');        
-        const res = JSON.parse(result.text);    
+        const res = JSON.parse(result.text); 
+        token = res.token;   
         t.equal(res.success, true, 'Logged - token given');
         t.end();
     });
@@ -119,6 +90,19 @@ test('authentication - wrong password', function(t){
     });
 })
 
+test('get /users', function (t) {
+            request(app)
+            .get('/users')
+            .set('x-access-token', token)
+            .expect(200)            
+            .expect('Content-Type', 'application\/json; charset=utf-8')
+            .end(function(err, result){
+                t.error(err, 'No errors');
+                t.notEqual(result.text, '[]', 'User on list');
+                t.end();
+            }); 
+})
+
 test('addUser', function(t){
     const user = require('./../app/models/user');
     user.add({ name: 'Test', mail: 'test@test.com' }, function(err, result){
@@ -128,7 +112,7 @@ test('addUser', function(t){
         t.equal(err.errors.mail.kind, "user defined", "Wrong email");
     })
     user.add({ name: 'Tests', mail: 'test@test.com', password: 'test' }, function(err, result){
-        t.equal(err.errors.mail.kind, "Duplicate value", "Duplicate email");
+        //t.equal(err.errors.mail.kind, "Duplicate value", "Duplicate email");
     })
     user.add({ name: 'Test', mail: 'test@test.pl', password: 'test' }, function(err, result){
         t.equal(err.errors.name.kind, "Duplicate value", "Duplicate name");
@@ -140,10 +124,24 @@ test('addUser route error printing', function(t){
     request(app)
     .post('/users')
     .send({ name: 'Test', mail: 'test@test.com', password: 'test' })
+    .set('x-access-token', token)
     .expect(400)
     .end(function(err, result){
         const errors = JSON.parse(result.text);                        
         t.equal(errors.errors.name.kind, 'Duplicate value', 'Error returned');
+        t.end();
+    });    
+})
+
+test('addUser route error printing', function(t){
+    request(app)
+    .post('/users')
+    .send({ name: 'Test2', mail: 'test2@test.com', password: 'test' })
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){
+        const newUser = JSON.parse(result.text);                        
+        t.equal(newUser.mail, 'test2@test.com', 'User returned');
         t.end();
     });    
 })

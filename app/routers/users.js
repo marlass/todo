@@ -3,6 +3,10 @@ const router = express.Router();
 
 const user = require('./../models/user');
 
+const isLogged = require('./../middleware/authorization');
+
+router.use(isLogged);
+
 router.route('/')
      .get(function(req, res) {
         user.getAll(function(err, users) {
