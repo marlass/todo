@@ -13,6 +13,15 @@ add: function(user, cb){
 getAll: function(cb){
     User.find({}, function(err, users) {
         cb(err, users);
-  });
+    });
+},
+get: function(userName, cb){
+    User.findOne({'name': userName}, function(err, user) {
+        if (user) {
+            cb(null, user);
+        } else {
+            cb({success: false, message: 'User not found.'});
+        }
+    })
 }
 };

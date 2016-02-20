@@ -90,17 +90,46 @@ test('authentication - wrong password', function(t){
     });
 })
 
-test('get /users', function (t) {
-            request(app)
-            .get('/users')
-            .set('x-access-token', token)
-            .expect(200)            
-            .expect('Content-Type', 'application\/json; charset=utf-8')
-            .end(function(err, result){
-                t.error(err, 'No errors');
-                t.notEqual(result.text, '[]', 'User on list');
-                t.end();
-            }); 
+test('get /users', function (t){
+    request(app)
+    .get('/users')
+    .set('x-access-token', token)
+    .expect(200)            
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        t.notEqual(result.text, '[]', 'User on list');
+        t.end();
+    }); 
+})
+
+test('get /users/username', function(t){
+    request(app)
+    .get('/users/Test')
+    .set('x-access-token', token)
+    .expect(200)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const user = JSON.parse(result.text);
+        t.equal(user.mail, 'test@test.com', 'User returned')
+        t.end();
+    })
+})
+
+test('get /users/username - wrong username', function(t){
+    request(app)
+    .get('/users/Testowo')
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const user = JSON.parse(result.text);
+        t.equal(user.success, false, 'Failed');
+        t.equal(user.message, 'User not found.', 'User not found');
+        t.end();
+    })
 })
 
 test('addUser', function(t){
