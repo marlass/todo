@@ -140,7 +140,7 @@ test('addUser', function(t){
         t.equal(err.errors.mail.kind, "user defined", "Wrong email");
     })
     user.add({ name: 'Tests', mail: 'test@test.com', password: 'test' }, function(err, result){
-        //t.equal(err.errors.mail.kind, "Duplicate value", "Duplicate email");
+        t.equal(err.errors.mail.kind, "Duplicate value", "Duplicate email");
     })
     user.add({ name: 'Test', mail: 'test@test.pl', password: 'test' }, function(err, result){
         t.equal(err.errors.name.kind, "Duplicate value", "Duplicate name");
@@ -223,10 +223,9 @@ test('isLogged without token', function(t){
             t.end();
         })
     });
-})
+});
 
-
-test.onFinish(function(){    
+test.onFinish(function(){  
     mongoose.connect(config.database, function(){
         mongoose.connection.db.dropDatabase();                
         process.exit(0);

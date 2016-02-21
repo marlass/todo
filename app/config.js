@@ -12,7 +12,7 @@ module.exports = function(){
             };
         case 'test':
             return {
-                'database': 'localhost/todo_test',
+                'database': 'localhost/todoTest',
                 'secret': 'ilovescotchyscotch'
             }
         default:
