@@ -10,7 +10,6 @@ const Config = require('./../app/config');
 const user = require('./../app/models/user');
 let token = '';
 let config = new Config();
-const async = require('async');
 
 test('test config', function(t){
     process.env.NODE_ENV = 'test';
