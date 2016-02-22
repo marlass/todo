@@ -2,7 +2,7 @@
 
 process.env.NODE_ENV = 'development';
 
-const test = require('tape');
+const test = require('tape-catch');
 const app = require('./../app/app');
 const request = require('supertest');
 

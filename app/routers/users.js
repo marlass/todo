@@ -23,11 +23,22 @@ router.route('/')
                 res.json(result);
             }
         }) 
-     }); 
+     }) 
      
 router.route('/:user_name')
     .get(function(req, res) {
         user.get(req.params.user_name, function(err, user) {
+            if (err) {
+                res.status(400);
+                res.json(err);
+            } else {
+                res.status(200);
+                res.json(user);
+            }
+        })
+    })
+    .delete(function(req, res) {
+        user.remove(req.params.user_name, function(err, user) {
             if (err) {
                 res.status(400);
                 res.json(err);

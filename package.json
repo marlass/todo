@@ -21,7 +21,8 @@
     "mongoose-beautiful-unique-validation": "~2.0.3"
   },
   "devDependencies": {
+    "supertest": "~1.2.0",
     "tape": "~4.4.0",
-    "supertest": "~1.2.0"
+    "tape-catch": "^1.0.4"
   }
 }

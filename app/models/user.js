@@ -10,6 +10,15 @@ add: function(user, cb){
             cb(null, user);
     })    
 },
+remove: function(userName, cb){
+    User.findOneAndRemove({'name': userName}, function(err, user){
+        if (user) {
+            cb(null, user);
+        } else {
+            cb({success: false, message: 'User does not exist.'});
+        }
+    })
+},
 getAll: function(cb){
     User.find({}, function(err, users) {
         cb(err, users);

@@ -2,12 +2,13 @@
 
 process.env.NODE_ENV = 'test';
 
-const test = require('tape');
+const test = require('tape-catch');
 const app = require('./../app/app');
 const request = require('supertest');
 const mongoose = require('mongoose');
 const Config = require('./../app/config');
 const user = require('./../app/models/user');
+
 let token = '';
 let config = new Config();
 
@@ -172,6 +173,30 @@ test('addUser route error printing', function(t){
         t.equal(newUser.mail, 'test2@test.com', 'User returned');
         t.end();
     });    
+})
+
+test('remove user', function(t){
+    request(app)
+    .delete('/users/Test2')
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){
+        const removedUser = JSON.parse(result.text);
+        t.equal(removedUser.mail, 'test2@test.com', 'Removed user returned');
+        t.end();
+    })
+})
+
+test('remove user fail', function(t){
+    request(app)
+    .delete('/users/Test3')
+    .set('x-access-token', token)
+    .expect(400)
+    .end(function(err, result){
+        const info = JSON.parse(result.text);
+        t.equal(info.message, 'User does not exist.', 'Cannot remove user that not exist');
+        t.end();
+    })
 })
 
 test('checking if authenticated', function(t){
