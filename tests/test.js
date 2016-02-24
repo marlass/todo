@@ -219,6 +219,32 @@ test('checking if authenticated', function(t){
     });
 })
 
+test('add task', function(t){
+    request(app)
+    .post('/tasks')
+    .send({ name: 'Testowe zadanko', user: 'Test'})
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){
+        const task = JSON.parse(result.text);
+        t.equal(task.name, 'Testowe zadanko', 'New task added');
+        t.end();
+    })
+})
+
+test('add task fail', function(t){
+    request(app)
+    .post('/tasks')
+    .send({ name: 'Testowe zadanko', user: 'Yolo453'})
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){
+        const error = JSON.parse(result.text);
+        t.equal(error.name, 'ValidationError', 'New task failed to add');
+        t.end();
+    })
+})
+
 test('isLogged wrong token', function(t){
     request(app)
     .get('/tasks')

@@ -3,17 +3,19 @@ const Project = require('./project');
 const mongoose     = require('mongoose');
 const Schema       = mongoose.Schema;
 const ProjectSchema = require('mongoose').model('Project').schema
+const user = require('./../user');
 const ObjectId = Schema.ObjectId;
 
-const TaskSchema   = new Schema({
+const taskSchema   = new Schema({
     name: {type: String, required: true},
     description: {type: String, default: ''},
-    project: [ProjectSchema],
-    user: {
-        _id: {type: ObjectId, required: true},
-        name: {type: String, required: true},
-        mail: {type: String, required: true}
-    },
+    project: ProjectSchema,
+    user: {type: String,
+           required: true,
+           validate: [ function(name, cb){
+                user.get(name, function(err, user){
+                    cb(err === null);
+                })}, 'User not exist']},
     deadline: {type: Date, default: null},
     size: {type: Number, default: 0},
     real_size: {type: Number, default: 0},
@@ -26,4 +28,6 @@ const TaskSchema   = new Schema({
     cancelled: {type: Date, default: null}
 });
 
-module.exports = mongoose.model('Task', TaskSchema);
+taskSchema.plugin(require('mongoose-beautiful-unique-validation'));
+
+module.exports = mongoose.model('Task', taskSchema);

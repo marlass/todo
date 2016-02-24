@@ -1,17 +1,16 @@
 const Task = require('./db/task');
 
 module.exports = {
-/*add: function(task, cb){
-    const newTask = new Task();
-    newTask.name = task.name;
+add: function(task, cb){
+    const newTask = new Task(task);
     
-    newTask.save(function(err) {
+    newTask.trySave(function(err, task) {
         if (err)
-            cb(err, null);
+            cb(err);
         else
-            cb(null, true);
+            cb(null, task);
     });
-},*/
+},
 getAll: function(cb){
     Task.find({}, function(err, tasks) {
         cb(err, tasks);

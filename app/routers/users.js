@@ -9,12 +9,12 @@ router.use(isLogged);
 
 router.route('/')
      .get(function(req, res) {
-        user.getAll(function(err, users) {
+        user.getAll(function(err, users){
             res.json(users);
         });
      })
      .post(function(req, res) {
-        user.add(req.body, function(err, result) {
+        user.add(req.body, function(err, result){
             if (err) {
                 res.status(400);
                 res.json(err);
@@ -27,7 +27,7 @@ router.route('/')
      
 router.route('/:user_name')
     .get(function(req, res) {
-        user.get(req.params.user_name, function(err, user) {
+        user.get(req.params.user_name, function(err, user){
             if (err) {
                 res.status(400);
                 res.json(err);
@@ -38,7 +38,7 @@ router.route('/:user_name')
         })
     })
     .delete(function(req, res) {
-        user.remove(req.params.user_name, function(err, user) {
+        user.remove(req.params.user_name, function(err, user){
             if (err) {
                 res.status(400);
                 res.json(err);

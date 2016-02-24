@@ -8,10 +8,17 @@ const isLogged = require('./../middleware/authorization');
 router.use(isLogged);
 
 router.route('/')
-    // create a task (accessed at POST http://localhost:8080/tasks)
-    /*.post(function(req, res) {
-    })*/
-    
+    .post(function(req, res) {
+        task.add(req.body, function(err, result){
+            if (err) {
+                res.status(400);
+                res.json(err);
+            } else {
+                res.status(200);
+                res.json(result);
+            }
+        })
+    })    
     .get(function(req, res) {
         task.getAll(function(err, result){
            res.json(result); 
