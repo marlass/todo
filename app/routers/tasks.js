@@ -27,9 +27,18 @@ router.route('/')
 
 router.route('/:task_id')
     // get the task with that id (accessed at GET http://localhost:8080/tasks/:task_id)
-    /*.get(function(req, res) {
+    .get(function(req, res) {
+        task.get(req.params.task_id, function(err, result){
+            if (err) {
+                res.status(400);
+                res.json(err);
+            } else {
+                res.status(200);
+                res.json(result);
+            }
+        });
     })
-    
+    /*
     .put(function(req, res) {
     })
     

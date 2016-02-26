@@ -10,6 +10,7 @@ const Config = require('./../app/config');
 const user = require('./../app/models/user');
 
 let token = '';
+let task_id = '';
 let config = new Config();
 
 test('test config', function(t){
@@ -227,6 +228,7 @@ test('add task', function(t){
     .expect(200)
     .end(function(err, result){
         const task = JSON.parse(result.text);
+        task_id = task._id;
         t.equal(task.name, 'Testowe zadanko', 'New task added');
         t.end();
     })
@@ -241,6 +243,38 @@ test('add task fail', function(t){
     .end(function(err, result){
         const error = JSON.parse(result.text);
         t.equal(error.name, 'ValidationError', 'New task failed to add');
+        t.end();
+    })
+})
+
+
+test('get /tasks/taskid', function(t){
+    request(app)
+    .get('/tasks/'+task_id)
+    .set('x-access-token', token)
+    .expect(200)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.name, 'Testowe zadanko', 'Task returned')
+        t.end();
+    })
+})
+
+//TODO: fix tests to be unbreakable - no need to manual database clear when previous tests fail
+
+test('get /tasks/:task_id - wrong is', function(t){
+    request(app)
+    .get('/tasks/fdsfdsf')
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.success, false, 'Failed');
+        t.equal(task.message, 'Task not found.', 'Task not found');
         t.end();
     })
 })
