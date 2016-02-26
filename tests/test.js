@@ -262,7 +262,7 @@ test('get /tasks/taskid', function(t){
     })
 })
 
-//TODO: fix tests to be unbreakable - no need to manual database clear when previous tests fail
+// TODO: fix tests to be unbreakable - no need to manual database clear when previous tests fail
 
 test('get /tasks/:task_id - wrong is', function(t){
     request(app)
