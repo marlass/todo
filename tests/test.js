@@ -264,9 +264,38 @@ test('get /tasks/taskid', function(t){
 
 // TODO: fix tests to be unbreakable - no need to manual database clear when previous tests fail
 
-test('get /tasks/:task_id - wrong is', function(t){
+test('get /tasks/:task_id - wrong id', function(t){
     request(app)
     .get('/tasks/fdsfdsf')
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.success, false, 'Failed');
+        t.equal(task.message, 'Task not found.', 'Task not found');
+        t.end();
+    })
+})
+
+test('remove /tasks/:task_id', function(t){
+    request(app)
+    .get('/tasks/'+task_id)
+    .set('x-access-token', token)
+    .expect(200)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task._id, task_id, 'Task removed.')
+        t.end();
+    })
+})
+
+test('remove /tasks/:task_id - wrong id', function(t){
+    request(app)
+    .get('/tasks/jdfkjdsf')
     .set('x-access-token', token)
     .expect(400)
     .expect('Content-Type', 'application\/json; charset=utf-8')

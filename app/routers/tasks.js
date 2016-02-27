@@ -40,9 +40,18 @@ router.route('/:task_id')
     })
     /*
     .put(function(req, res) {
-    })
+    })*/
     
     .delete(function(req, res) {
-    });*/
+        task.remove(req.params.task_id, function(err, result){
+            if (err) {
+                res.status(400);
+                res.json(err);
+            } else {
+                res.status(200);
+                res.json(result);
+            }
+        })
+    });
 
 module.exports = router;
