@@ -279,9 +279,56 @@ test('get /tasks/:task_id - wrong id', function(t){
     })
 })
 
+test('update /tasks/:task_id - fail', function(t){
+    request(app)
+    .post('/tasks/gddfdfs')    
+    .send({ name: 'Testowe zadanko 2', user: 'Test'})
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.name, 'CastError', 'Could not update task.');
+        t.end();
+    })
+})
+
+test('update /tasks/:task_id', function(t){
+    request(app)
+    .post('/tasks/'+task_id)    
+    .send({ name: 'Testowe zadanko 2', user: 'Test'})
+    .set('x-access-token', token)
+    .expect(200)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.name, 'Testowe zadanko 2', 'Failed');
+        t.end();
+    })
+})
+
+test('update /tasks/:task_id', function(t){
+    request(app)
+    .post('/tasks/'+task_id)    
+    .send({ name: 'Testowe zadanko 2', user: 'Testowo'})
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.message, 'Validation failed', 'Failed');
+        t.end();
+    })
+})
+
+//test to check validators on update
+
 test('remove /tasks/:task_id', function(t){
     request(app)
-    .get('/tasks/'+task_id)
+    .delete('/tasks/'+task_id)
     .set('x-access-token', token)
     .expect(200)
     .expect('Content-Type', 'application\/json; charset=utf-8')
@@ -295,7 +342,7 @@ test('remove /tasks/:task_id', function(t){
 
 test('remove /tasks/:task_id - wrong id', function(t){
     request(app)
-    .get('/tasks/jdfkjdsf')
+    .delete('/tasks/jdfkjdsf')
     .set('x-access-token', token)
     .expect(400)
     .expect('Content-Type', 'application\/json; charset=utf-8')

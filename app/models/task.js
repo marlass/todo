@@ -11,6 +11,15 @@ add: function(task, cb){
             cb(null, task);
     });
 },
+update: function(taskId, task, cb){
+    Task.findByIdAndUpdate(taskId, task, {new: true, runValidators: true}, function(err, task){
+        if (task) {
+            cb(null, task);
+        } else {
+            cb(err);
+        }
+    })
+},
 remove: function(taskId, cb){
     Task.findByIdAndRemove(taskId, function(err, task){
         if (task) {
