@@ -16,7 +16,11 @@ update: function(taskId, task, cb){
         if (task) {
             cb(null, task);
         } else {
-            cb(err);
+            if (err === null && task === null) {
+                cb({success: false, message: 'Task does not exist.'});
+            } else {
+                cb(err);
+            }
         }
     })
 },
@@ -42,5 +46,10 @@ getAll: function(cb){
     Task.find({}, function(err, tasks) {
         cb(err, tasks);
   });
+},
+getAllNotDone: function(cb){
+    Task.find({done: null}, function(err, tasks) {
+        cb(err, tasks);
+    })
 }
 }

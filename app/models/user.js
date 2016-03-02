@@ -10,6 +10,19 @@ add: function(user, cb){
             cb(null, user);
     })    
 },
+update: function(userName, user, cb){
+    User.findOneAndUpdate({'name': userName}, user, {new: true, runValidators: true}, function(err, user){
+        if (user) {
+            cb(null, user);
+        } else {
+            if (err === null && user === null) {
+                cb({success: false, message: 'User does not exist.'});
+            } else {
+                cb(err);
+            }
+        }
+    })
+},
 remove: function(userName, cb){
     User.findOneAndRemove({'name': userName}, function(err, user){
         if (user) {

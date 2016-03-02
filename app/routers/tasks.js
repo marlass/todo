@@ -20,9 +20,15 @@ router.route('/')
         })
     })    
     .get(function(req, res) {
-        task.getAll(function(err, result){
-           res.json(result); 
-        });
+        if (req.query.status == 'notDone') {
+            task.getAllNotDone(function(err, result){
+                res.json(result); 
+            });
+        } else {
+            task.getAll(function(err, result){
+            res.json(result); 
+            });
+        }
     });
 
 router.route('/:task_id')

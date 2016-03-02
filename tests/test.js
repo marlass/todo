@@ -163,7 +163,7 @@ test('addUser route error printing', function(t){
     });    
 })
 
-test('addUser route error printing', function(t){
+test('addUser route', function(t){
     request(app)
     .post('/users')
     .send({ name: 'Test2', mail: 'test2@test.com', password: 'test' })
@@ -176,9 +176,55 @@ test('addUser route error printing', function(t){
     });    
 })
 
+// TODO: fix update to return no document when you try to update one that does not exist
+test('update /users/:user_name - fail', function(t){
+    request(app)
+    .post('/users/gddfdfs')    
+    .send({ name: 'Test3', mail: 'test2@test.com', password: 'test'})
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const user = JSON.parse(result.text);
+        t.equal(user.message, 'User does not exist.', 'User does not exist.');
+        t.end();
+    })
+})
+
+test('update /users/:user_name', function(t){
+    request(app)
+    .post('/users/Test2')    
+    .send({ name: 'Test3', mail: 'test2@test.com', password: 'test'})
+    .set('x-access-token', token)
+    .expect(200)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const user = JSON.parse(result.text);
+        t.equal(user.name, 'Test3', 'User updated');
+        t.end();
+    })
+})
+
+test('update /users/:user_name - fail validation', function(t){
+    request(app)
+    .post('/users/Test3')    
+    .send({ name: 'Test3', mail: 'test2@test'})
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const user = JSON.parse(result.text);
+        t.equal(user.name, 'ValidationError', 'Validation error');
+        t.end();
+    })
+})
+
 test('remove user', function(t){
     request(app)
-    .delete('/users/Test2')
+    .delete('/users/Test3')
     .set('x-access-token', token)
     .expect(200)
     .end(function(err, result){
@@ -190,7 +236,7 @@ test('remove user', function(t){
 
 test('remove user fail', function(t){
     request(app)
-    .delete('/users/Test3')
+    .delete('/users/Test4')
     .set('x-access-token', token)
     .expect(400)
     .end(function(err, result){
@@ -294,6 +340,21 @@ test('update /tasks/:task_id - fail', function(t){
     })
 })
 
+test('update /tasks/:task_id - fail', function(t){
+    request(app)
+    .post('/tasks/507f1f77bcf86cd799439011')    
+    .send({ name: 'Testowe zadanko 2', user: 'Test'})
+    .set('x-access-token', token)
+    .expect(400)
+    .expect('Content-Type', 'application\/json; charset=utf-8')
+    .end(function(err, result){
+        t.error(err, 'No errors');
+        const task = JSON.parse(result.text);
+        t.equal(task.message, 'Task does not exist.', 'Could not update task.');
+        t.end();
+    })
+})
+
 test('update /tasks/:task_id', function(t){
     request(app)
     .post('/tasks/'+task_id)    
@@ -304,12 +365,12 @@ test('update /tasks/:task_id', function(t){
     .end(function(err, result){
         t.error(err, 'No errors');
         const task = JSON.parse(result.text);
-        t.equal(task.name, 'Testowe zadanko 2', 'Failed');
+        t.equal(task.name, 'Testowe zadanko 2', 'Task updated');
         t.end();
     })
 })
 
-test('update /tasks/:task_id', function(t){
+test('update /tasks/:task_id - failed validation', function(t){
     request(app)
     .post('/tasks/'+task_id)    
     .send({ name: 'Testowe zadanko 2', user: 'Testowo'})
@@ -353,6 +414,18 @@ test('remove /tasks/:task_id - wrong id', function(t){
         t.equal(task.message, 'Task not found.', 'Task not found');
         t.end();
     })
+})
+
+test('get tasks not done', function(t){
+     request(app)
+    .get('/tasks/?status=notDone')    
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){      
+        t.error(err, 'No errors');
+        t.equal(result.text, '[]', 'Empty tasks list');
+        t.end();
+    });
 })
 
 test('isLogged wrong token', function(t){
