@@ -428,6 +428,18 @@ test('get tasks not done', function(t){
     });
 })
 
+test('get tasks done', function(t){
+     request(app)
+    .get('/tasks/?status=done')    
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){      
+        t.error(err, 'No errors');
+        t.equal(result.text, '[]', 'Empty tasks list');
+        t.end();
+    });
+})
+
 test('isLogged wrong token', function(t){
     request(app)
     .get('/tasks')

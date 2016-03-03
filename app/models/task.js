@@ -47,6 +47,11 @@ getAll: function(cb){
         cb(err, tasks);
   });
 },
+getAllDone: function(cb){
+    Task.find({done: {$ne: null}}, function(err, tasks) {
+        cb(err, tasks);
+    })  
+},
 getAllNotDone: function(cb){
     Task.find({done: null}, function(err, tasks) {
         cb(err, tasks);

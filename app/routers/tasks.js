@@ -24,6 +24,10 @@ router.route('/')
             task.getAllNotDone(function(err, result){
                 res.json(result); 
             });
+        } else if (req.query.status == 'done') {
+            task.getAllDone(function(err, result){
+                res.json(result);
+            })
         } else {
             task.getAll(function(err, result){
             res.json(result); 
