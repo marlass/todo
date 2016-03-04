@@ -418,7 +418,7 @@ test('remove /tasks/:task_id - wrong id', function(t){
 
 test('get tasks not done', function(t){
      request(app)
-    .get('/tasks/?status=notDone')    
+    .get('/tasks/?status=todo')    
     .set('x-access-token', token)
     .expect(200)
     .end(function(err, result){      
@@ -431,6 +431,18 @@ test('get tasks not done', function(t){
 test('get tasks done', function(t){
      request(app)
     .get('/tasks/?status=done')    
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){      
+        t.error(err, 'No errors');
+        t.equal(result.text, '[]', 'Empty tasks list');
+        t.end();
+    });
+})
+
+test('get tasks cancelled', function(t){
+     request(app)
+    .get('/tasks/?status=cancelled')    
     .set('x-access-token', token)
     .expect(200)
     .end(function(err, result){      

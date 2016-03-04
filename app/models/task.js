@@ -48,12 +48,17 @@ getAll: function(cb){
   });
 },
 getAllDone: function(cb){
-    Task.find({done: {$ne: null}}, function(err, tasks) {
+    Task.find({status: 'done'}, function(err, tasks) {
         cb(err, tasks);
     })  
 },
-getAllNotDone: function(cb){
-    Task.find({done: null}, function(err, tasks) {
+getAllTodo: function(cb){
+    Task.find({status: 'todo'}, function(err, tasks) {
+        cb(err, tasks);
+    })
+},
+getAllCancelled: function(cb){
+    Task.find({status: 'cancelled'}, function(err, tasks) {
         cb(err, tasks);
     })
 }

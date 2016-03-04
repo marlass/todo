@@ -20,15 +20,19 @@ router.route('/')
         })
     })    
     .get(function(req, res) {
-        if (req.query.status == 'notDone') {
-            task.getAllNotDone(function(err, result){
+        if (req.query.status == 'todo') {
+            task.getAllTodo(function(err, result){
                 res.json(result); 
             });
         } else if (req.query.status == 'done') {
             task.getAllDone(function(err, result){
                 res.json(result);
             })
-        } else {
+        } else if (req.query.status == 'cancelled') {
+            task.getAllCancelled(function(err, result){
+                res.json(result);
+            })
+        }  else {
             task.getAll(function(err, result){
             res.json(result); 
             });
