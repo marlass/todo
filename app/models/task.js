@@ -61,5 +61,10 @@ getAllCancelled: function(cb){
     Task.find({status: 'cancelled'}, function(err, tasks) {
         cb(err, tasks);
     })
+},
+getAllTodoByPriority: function(cb){
+    Task.find({status: 'todo'}).sort({ priority: 1 }).exec(function(err, tasks) {
+        cb(err, tasks);
+    })
 }
 }

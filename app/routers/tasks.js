@@ -32,7 +32,11 @@ router.route('/')
             task.getAllCancelled(function(err, result){
                 res.json(result);
             })
-        }  else {
+        } else if (req.query.sort == 'priority') {
+            task.getAllTodoByPriority(function(err, result){
+                res.json(result);
+            })
+        } else {
             task.getAll(function(err, result){
             res.json(result); 
             });

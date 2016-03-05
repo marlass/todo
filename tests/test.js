@@ -452,6 +452,18 @@ test('get tasks cancelled', function(t){
     });
 })
 
+test('get tasks by priority', function(t){
+     request(app)
+    .get('/tasks/?sort=priority')    
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){      
+        t.error(err, 'No errors');
+        t.equal(result.text, '[]', 'Empty tasks list');
+        t.end();
+    });
+})
+
 test('isLogged wrong token', function(t){
     request(app)
     .get('/tasks')
