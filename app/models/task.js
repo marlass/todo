@@ -66,5 +66,10 @@ getAllTodoByPriority: function(cb){
     Task.find({status: 'todo'}).sort({ priority: 1 }).exec(function(err, tasks) {
         cb(err, tasks);
     })
+},
+getAllTodoBySize: function(cb){
+    Task.find({status: 'todo'}).sort({size: 1}).exec(function(err, tasks){
+        cb(err, tasks);
+    })
 }
 }

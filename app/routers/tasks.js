@@ -36,6 +36,10 @@ router.route('/')
             task.getAllTodoByPriority(function(err, result){
                 res.json(result);
             })
+        } else if (req.query.sort == 'size') {
+            task.getAllTodoBySize(function(err, result){
+                res.json(result);
+            })  
         } else {
             task.getAll(function(err, result){
             res.json(result); 
