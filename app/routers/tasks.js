@@ -40,6 +40,10 @@ router.route('/')
             task.getAllTodoBySize(function(err, result){
                 res.json(result);
             })  
+        } else if (req.query.sort == 'deadline') {
+            task.getAllTodoByDeadline(function(err, result){
+                res.json(result);
+            })  
         } else {
             task.getAll(function(err, result){
             res.json(result); 

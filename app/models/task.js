@@ -71,5 +71,10 @@ getAllTodoBySize: function(cb){
     Task.find({status: 'todo'}).sort({size: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
+},
+getAllTodoByDeadline: function(cb){
+    Task.find({status: 'todo'}).sort({deadline: 1}).exec(function(err, tasks){
+        cb(err, tasks);
+    })
 }
 }
