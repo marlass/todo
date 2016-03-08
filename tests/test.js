@@ -488,6 +488,18 @@ test('get tasks by deadline', function(t){
     });
 })
 
+test('get tasks by project', function(t){
+     request(app)
+    .get('/tasks/?sort=project')    
+    .set('x-access-token', token)
+    .expect(200)
+    .end(function(err, result){      
+        t.error(err, 'No errors');
+        t.equal(result.text, '[]', 'Empty tasks list');
+        t.end();
+    });
+})
+
 test('isLogged wrong token', function(t){
     request(app)
     .get('/tasks')

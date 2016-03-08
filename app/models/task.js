@@ -76,5 +76,10 @@ getAllTodoByDeadline: function(cb){
     Task.find({status: 'todo'}).sort({deadline: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
+},
+getAllTodoByProject: function(cb){
+    Task.find({status: 'todo'}).sort({project: 1}).exec(function(err, tasks){
+        cb(err, tasks);
+    })
 }
 }

@@ -44,6 +44,10 @@ router.route('/')
             task.getAllTodoByDeadline(function(err, result){
                 res.json(result);
             })  
+        } else if (req.query.sort == 'project') {
+            task.getAllTodoByProject(function(err, result){
+                res.json(result);
+            })  
         } else {
             task.getAll(function(err, result){
             res.json(result); 
