@@ -48,6 +48,10 @@ router.route('/')
             task.getAllTodoByProject(function(err, result){
                 res.json(result);
             })  
+        } else if (req.query.sort == 'real-size') {
+            task.getAllDoneByRealSize(function(err, result){
+                res.json(result);
+            })  
         } else {
             task.getAll(function(err, result){
             res.json(result); 
