@@ -21,39 +21,39 @@ router.route('/')
     })    
     .get(function(req, res) {
         if (req.query.status == 'todo') {
-            task.getAllTodo(function(err, result){
+            task.getAllTodo(req.decoded.name, function(err, result){
                 res.json(result); 
             });
         } else if (req.query.status == 'done') {
-            task.getAllDone(function(err, result){
+            task.getAllDone(req.decoded.name, function(err, result){
                 res.json(result);
             })
         } else if (req.query.status == 'cancelled') {
-            task.getAllCancelled(function(err, result){
+            task.getAllCancelled(req.decoded.name, function(err, result){
                 res.json(result);
             })
         } else if (req.query.sort == 'priority') {
-            task.getAllTodoByPriority(function(err, result){
+            task.getAllTodoByPriority(req.decoded.name, function(err, result){
                 res.json(result);
             })
         } else if (req.query.sort == 'size') {
-            task.getAllTodoBySize(function(err, result){
+            task.getAllTodoBySize(req.decoded.name, function(err, result){
                 res.json(result);
             })  
         } else if (req.query.sort == 'deadline') {
-            task.getAllTodoByDeadline(function(err, result){
+            task.getAllTodoByDeadline(req.decoded.name, function(err, result){
                 res.json(result);
             })  
         } else if (req.query.sort == 'project') {
-            task.getAllTodoByProject(function(err, result){
+            task.getAllTodoByProject(req.decoded.name, function(err, result){
                 res.json(result);
             })  
         } else if (req.query.sort == 'real-size') {
-            task.getAllDoneByRealSize(function(err, result){
+            task.getAllDoneByRealSize(req.decoded.name, function(err, result){
                 res.json(result);
             })  
         } else {
-            task.getAll(function(err, result){
+            task.getAll(req.decoded.name, function(err, result){
             res.json(result); 
             });
         }

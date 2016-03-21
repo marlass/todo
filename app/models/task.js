@@ -42,48 +42,48 @@ get: function(taskId, cb){
         }
     })
 },
-getAll: function(cb){
-    Task.find({}, function(err, tasks) {
+getAll: function(user, cb){
+    Task.find({user: user}, function(err, tasks) {
         cb(err, tasks);
   });
 },
-getAllDone: function(cb){
-    Task.find({status: 'done'}, function(err, tasks) {
+getAllDone: function(user, cb){
+    Task.find({user: user, status: 'done'}, function(err, tasks) {
         cb(err, tasks);
     })  
 },
-getAllTodo: function(cb){
-    Task.find({status: 'todo'}, function(err, tasks) {
+getAllTodo: function(user, cb){
+    Task.find({user: user, status: 'todo'}, function(err, tasks) {
         cb(err, tasks);
     })
 },
-getAllCancelled: function(cb){
-    Task.find({status: 'cancelled'}, function(err, tasks) {
+getAllCancelled: function(user, cb){
+    Task.find({user: user, status: 'cancelled'}, function(err, tasks) {
         cb(err, tasks);
     })
 },
-getAllTodoByPriority: function(cb){
-    Task.find({status: 'todo'}).sort({ priority: 1 }).exec(function(err, tasks) {
+getAllTodoByPriority: function(user, cb){
+    Task.find({user: user, status: 'todo'}).sort({ priority: 1 }).exec(function(err, tasks) {
         cb(err, tasks);
     })
 },
-getAllTodoBySize: function(cb){
-    Task.find({status: 'todo'}).sort({size: 1}).exec(function(err, tasks){
+getAllTodoBySize: function(user, cb){
+    Task.find({user: user, status: 'todo'}).sort({size: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
 },
-getAllDoneByRealSize: function(cb){
-    Task.find({status: 'done'}).sort({real_size: 1}).exec(function(err, tasks){
+getAllDoneByRealSize: function(user, cb){
+    Task.find({user: user, status: 'done'}).sort({real_size: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
 },
-getAllTodoByDeadline: function(cb){
-    Task.find({status: 'todo'}).sort({deadline: 1}).exec(function(err, tasks){
+getAllTodoByDeadline: function(user, cb){
+    Task.find({user: user, status: 'todo'}).sort({deadline: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
 },
-getAllTodoByProject: function(cb){
-    Task.find({status: 'todo'}).sort({project: 1}).exec(function(err, tasks){
+getAllTodoByProject: function(user, cb){
+    Task.find({user: user, status: 'todo'}).sort({project: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
 }
