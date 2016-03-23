@@ -53,9 +53,15 @@ router.route('/')
                 res.json(result);
             })  
         } else {
-            task.getAll(req.decoded.name, function(err, result){
-            res.json(result); 
-            });
+            if (req.query.tag) {
+                task.getAllTodoByTag(req.decoded.name, req.query.tag, function(err, result){
+                    res.json(result);
+                })
+            } else {
+                task.getAll(req.decoded.name, function(err, result){
+                    res.json(result); 
+                });
+            }
         }
     });
 

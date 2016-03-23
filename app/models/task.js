@@ -86,5 +86,10 @@ getAllTodoByProject: function(user, cb){
     Task.find({user: user, status: 'todo'}).sort({project: 1}).exec(function(err, tasks){
         cb(err, tasks);
     })
+},
+getAllTodoByTag: function(user, tag, cb){
+    Task.find({user: user, tags: tag, status: 'todo'}).exec(function(err, tasks){
+        cb(err, tasks);
+    })
 }
 }
